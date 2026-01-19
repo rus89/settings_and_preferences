@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:settings_and_preferences/screens/settings_screen.dart';
 import 'models/settings_model.dart';
 
 void main() {
@@ -27,48 +28,38 @@ class _SettingsAppState extends State<SettingsApp> {
 
     return MaterialApp(
       theme: settings.isDarkMode ? ThemeData.dark() : ThemeData.light(),
-      home: Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SwitchListTile(
-                title: const Text('Dark Mode'),
-                value: settings.isDarkMode,
-                onChanged: (value) => settings.toggleDarkMode(value),
-              ),
-              Slider(
-                min: 10.0,
-                max: 30.0,
-                value: settings.fontSize,
-                onChanged: (value) => settings.setFontSize(value),
-                label: 'Font Size: ${settings.fontSize.toStringAsFixed(1)}',
-              ),
-              DropdownButton<String>(
-                value: settings.scriptLanguage,
-                items: const [
-                  DropdownMenuItem(value: 'en', child: Text('English')),
-                  DropdownMenuItem(value: 'es', child: Text('Spanish')),
-                  DropdownMenuItem(value: 'fr', child: Text('French')),
-                ],
-                onChanged: (value) {
-                  if (value != null) {
-                    settings.setScriptLanguage(value);
-                  }
-                },
-              ),
-              CheckboxListTile(
-                title: const Text('Remember Settings'),
-                value: settings.rememberSettings,
-                onChanged: (value) {
-                  if (value != null) {
-                    settings.toggleRememberSettings(value);
-                  }
-                },
-              ),
-            ],
-          ),
+      home: HomePage(),
+    );
+  }
+}
+
+//------------------------------------------------------------------------------
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var settings = context.watch<SettingsModel>();
+    return Scaffold(
+      appBar: AppBar(title: const Text('Settings App')),
+      body: Center(
+        child: Column(
+          children: [
+            Text(
+              'Welcome to Settings App',
+              style: TextStyle(fontSize: settings.fontSize),
+            ),
+            const SizedBox(height: 20),
+          ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.settings),
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const SettingsScreen()),
+          );
+        },
       ),
     );
   }
