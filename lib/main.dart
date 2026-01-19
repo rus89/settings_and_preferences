@@ -25,10 +25,20 @@ class _SettingsAppState extends State<SettingsApp> {
   @override
   Widget build(BuildContext context) {
     var settings = context.watch<SettingsModel>();
+    TextScaler textScaler = TextScaler.linear(settings.fontSize / 14.0);
 
     return MaterialApp(
-      theme: settings.isDarkMode ? ThemeData.dark() : ThemeData.light(),
-      home: HomePage(),
+      builder: (context, child) {
+        final mediaQuery = MediaQuery.of(context);
+        return MediaQuery(
+          data: mediaQuery.copyWith(textScaler: textScaler),
+          child: child ?? const SizedBox.shrink(),
+        );
+      },
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: settings.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      home: const HomePage(),
     );
   }
 }
@@ -45,10 +55,7 @@ class HomePage extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            Text(
-              'Welcome to Settings App',
-              style: TextStyle(fontSize: settings.fontSize),
-            ),
+            Text('Welcome to Settings App'),
             const SizedBox(height: 20),
           ],
         ),
