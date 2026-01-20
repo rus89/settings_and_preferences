@@ -5,6 +5,7 @@ import 'package:settings_and_preferences/models/settings_model.dart';
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
+  //------------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     var settings = context.watch<SettingsModel>();

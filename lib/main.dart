@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_and_preferences/screens/settings_screen.dart';
+import 'package:settings_and_preferences/services/settings_store.dart';
 import 'models/settings_model.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final settingsStore = SettingsStore();
+  await settingsStore.init();
+  final settingsModel = SettingsModel(settingsStore);
+  await settingsModel.loadSettings();
+
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => SettingsModel(),
+    MultiProvider(
+      providers: [
+        Provider<SettingsStore>.value(value: settingsStore),
+        ChangeNotifierProvider.value(value: settingsModel),
+      ],
       child: const SettingsApp(),
     ),
   );
@@ -49,7 +59,6 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var settings = context.watch<SettingsModel>();
     return Scaffold(
       appBar: AppBar(title: const Text('Settings App')),
       body: Center(
